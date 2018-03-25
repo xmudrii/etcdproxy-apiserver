@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/xmudrii/etcdproxy-apiserver/etcdapi"
-	"github.com/xmudrii/etcdproxy-apiserver/pkg/env"
+	"github.com/xmudrii/etcdproxy-proof-of-concept/etcdapi"
+	"github.com/xmudrii/etcdproxy-proof-of-concept/pkg/env"
 )
 
 type key struct {

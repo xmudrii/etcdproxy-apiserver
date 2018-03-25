@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/xmudrii/etcdproxy-apiserver/grpcproxy"
-	"github.com/xmudrii/etcdproxy-apiserver/server"
+	"github.com/xmudrii/etcdproxy-proof-of-concept/grpcproxy"
+	"github.com/xmudrii/etcdproxy-proof-of-concept/server"
 )
 
 // apiServerCmd starts the etcd-proxy-api server.

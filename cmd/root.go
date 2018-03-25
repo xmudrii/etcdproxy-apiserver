@@ -9,7 +9,7 @@ import (
 
 // rootCmd represents the base command.
 var rootCmd = &cobra.Command{
-	Use:   "etcdproxy-apiserver",
+	Use:   "etcdproxy-proof-of-concept",
 	Short: "etcd-gPRC Proxy API server prototype",
 	Long:  `Set up an etcd-gRPC proxy to a namespace to access your data.`,
 }
