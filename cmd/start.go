@@ -2,14 +2,14 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/xmudrii/etcd-proxy-api/grpcproxy"
-	"github.com/xmudrii/etcd-proxy-api/server"
+	"github.com/xmudrii/etcdproxy-apiserver/grpcproxy"
+	"github.com/xmudrii/etcdproxy-apiserver/server"
 )
 
 // apiServerCmd starts the etcd-proxy-api server.
 var (
-	apiServerCmd = &cobra.Command{
-		Use:   "apiserver",
+	startCmd = &cobra.Command{
+		Use:   "start",
 		Short: "Start etcd-gPRC Proxy API server",
 		Long:  `Set up an etcd-gRPC proxy to a namespace to access your data.`,
 		Run: RunApiServer,
@@ -20,8 +20,8 @@ var (
 )
 
 func init() {
-	apiServerCmd.Flags().StringVarP(&etcdProxyBindAddress, "proxy-bind-address", "a", "127.0.0.1:23790", "Start etcd-gRPC proxy on this address. Do NOT include http://!")
-	apiServerCmd.Flags().StringVarP(&etcdNamespace, "namespace", "n", "default", "Namespace to proxy to.")
+	startCmd.Flags().StringVarP(&etcdProxyBindAddress, "proxy-bind-address", "a", "127.0.0.1:23790", "Start etcd-gRPC proxy on this address.")
+	startCmd.Flags().StringVarP(&etcdNamespace, "namespace", "n", "default", "Namespace to proxy to.")
 }
 
 func RunApiServer(cmd *cobra.Command, args []string) {

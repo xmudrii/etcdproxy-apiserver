@@ -9,8 +9,8 @@ import (
 
 // rootCmd represents the base command.
 var rootCmd = &cobra.Command{
-	Use:   "etcd-proxy-api",
-	Short: "etcd-gPRC Proxy API prototype",
+	Use:   "etcdproxy-apiserver",
+	Short: "etcd-gPRC Proxy API server prototype",
 	Long:  `Set up an etcd-gRPC proxy to a namespace to access your data.`,
 }
 
@@ -32,5 +32,5 @@ func addPersistentFlags() {
 }
 
 func addCommands() {
-	rootCmd.AddCommand(apiServerCmd)
+	rootCmd.AddCommand(startCmd)
 }

@@ -6,7 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/xmudrii/etcd-proxy-api/etcdapi"
+	"github.com/xmudrii/etcdproxy-apiserver/etcdapi"
+	"github.com/xmudrii/etcdproxy-apiserver/pkg/env"
 )
 
 type key struct {
@@ -14,11 +15,18 @@ type key struct {
 	Value string `json:"value,omitempty"`
 }
 
+var (
+	APIServerPort string
+)
+
 // RunServer runs mux server for external-API.
 func RunServer() {
+	APIServerPort = env.GetEnvString("ETCDAPISERVER_PORT", "8000")
+	APIServerPort = ":" + APIServerPort
+
 	router := mux.NewRouter()
 	router.HandleFunc("/write", WriteKey).Methods("PUT")
-	log.Fatal(http.ListenAndServe(":8000", router))
+	log.Fatal(http.ListenAndServe(APIServerPort, router))
 }
 
 // WriteKey writes to etcd.

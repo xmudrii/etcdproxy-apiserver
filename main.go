@@ -1,6 +1,6 @@
 package main
 
-import "github.com/xmudrii/etcd-proxy-api/cmd"
+import "github.com/xmudrii/etcdproxy-apiserver/cmd"
 
 func main() {
 	cmd.Execute()
