@@ -1,0 +1,2 @@
+07b4bff4c4af3edeead0f29f447ce249520929e8bb4474a5fe6fff9881152a69  etcdproxy-proof-of-concept_0.1.0_linux_amd64.tar.gz
+dc57a23fe9654e72c8ea51e085bdae16be950f2ef2a05171b4cdb038939f045f  etcdproxy-proof-of-concept_0.1.0_darwin_amd64.tar.gz

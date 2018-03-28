@@ -1,4 +1,4 @@
-etcd-proxy-api
+etcdproxy-proof-of-concept
 ==============
 
 This is a prototype to test how [etcd namespaces](https://github.com/coreos/etcd/blob/3239641a0c0e421769224b4e6c1dc06ce4dc3e48/Documentation/op-guide/grpc_proxy.md#namespacing) works along with [etcd-gRPC proxy](https://github.com/coreos/etcd/blob/3239641a0c0e421769224b4e6c1dc06ce4dc3e48/Documentation/op-guide/grpc_proxy.md).
@@ -28,20 +28,20 @@ For other ways to run etcd, check out the [`Getting started` portion of `etcd` R
 
 In order to install this prototype you need to have [Go installed and configured](https://golang.org/doc/install).
 
-Then, you can install `etcd-proxy-api` by using the following `go get` command:
+Then, you can install `etcdproxy-proof-of-concept` by using the following `go get` command:
 ```
-go get github.com/xmudrii/etcd-proxy-api
+go get github.com/xmudrii/etcdproxy-proof-of-concept
 ```
 
 ## Running
 
 Execute the following command to run `etcd-proxy-api`:
 ```
-etcd-proxy-api apiserver
+etcdproxy-proof-of-concept start
 ```
 
 By default it runs proxied `etcd` instance on port `23790` and uses namespace called default `default`.
-If you want to change those values, you can use `--proxy-bind-address` and `--namespace` flags. For more details check the help command (`etcd-proxy-api apiserver --help`).
+If you want to change those values, you can use `--proxy-bind-address` and `--namespace` flags. For more details check the help command (`etcdproxy-proof-of-concept start --help`).
 
 ## Writing to namespace
 
