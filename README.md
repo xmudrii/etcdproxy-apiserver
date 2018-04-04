@@ -1,5 +1,5 @@
 etcdproxy-proof-of-concept
-==============
+==========================
 
 This is a prototype to test how [etcd namespaces](https://github.com/coreos/etcd/blob/3239641a0c0e421769224b4e6c1dc06ce4dc3e48/Documentation/op-guide/grpc_proxy.md#namespacing) works along with [etcd-gRPC proxy](https://github.com/coreos/etcd/blob/3239641a0c0e421769224b4e6c1dc06ce4dc3e48/Documentation/op-guide/grpc_proxy.md).
 
@@ -24,7 +24,7 @@ This command runs etcd on port 2379 in the background.
 
 For other ways to run etcd, check out the [`Getting started` portion of `etcd` README](https://github.com/coreos/etcd#getting-started).
 
-## Installing `etcd-proxy-api`
+## Installing `etcdproxy-proof-of-concept`
 
 In order to install this prototype you need to have [Go installed and configured](https://golang.org/doc/install).
 
