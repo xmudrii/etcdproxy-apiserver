@@ -41,7 +41,7 @@ etcdproxy-proof-of-concept
 ```
 
 By default it runs proxied `etcd` instance on port `23790` and uses namespace called default `default`.
-To change the address to bind proxy on, use the `-bind-address` flag with format of `127.0.0.1:23709`.
+To change the address to bind proxy on, use the `-bindAddress` flag with format of `127.0.0.1:23709`.
 To change the namespace to proxy, use the `-namespace` flag.
 
-If you're running etcd on the non-default port, use the `-etcd-address` flag with format of `http://127.0.0.1:2379`.
+If you're running etcd on the non-default port, use the `-etcdAddress` flag with format of `http://127.0.0.1:2379`.
