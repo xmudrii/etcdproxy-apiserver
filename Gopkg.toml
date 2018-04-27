@@ -27,7 +27,7 @@
 
 [[constraint]]
   name = "github.com/coreos/etcd"
-  version = "3.3.0"
+  version = "3.3.4"
 
 [[constraint]]
   name = "github.com/coreos/pkg"
@@ -38,20 +38,12 @@
   version = "1.1.0"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/kubicorn/kubicorn"
-
-[[constraint]]
   name = "github.com/soheilhy/cmux"
   version = "0.1.4"
 
 [[constraint]]
-  name = "github.com/spf13/cobra"
-  version = "0.0.1"
-
-[[constraint]]
   name = "google.golang.org/grpc"
-  version = "1.10.0"
+  version = "1.11.3"
 
 [prune]
   go-tests = true

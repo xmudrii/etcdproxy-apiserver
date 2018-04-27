@@ -37,15 +37,11 @@ go get github.com/xmudrii/etcdproxy-proof-of-concept
 
 Execute the following command to run `etcd-proxy-api`:
 ```
-etcdproxy-proof-of-concept start
+etcdproxy-proof-of-concept
 ```
 
 By default it runs proxied `etcd` instance on port `23790` and uses namespace called default `default`.
-If you want to change those values, you can use `--proxy-bind-address` and `--namespace` flags. For more details check the help command (`etcdproxy-proof-of-concept start --help`).
+To change the address to bind proxy on, use the `-bindAddress` flag with format of `127.0.0.1:23709`.
+To change the namespace to proxy, use the `-namespace` flag.
 
-## Writing to namespace
-
-To write to the namespace, you need to send a `PUT` request with `name` and `value` keys to `/write` endpoint running on the port `:8000`.
-```
-curl -X PUT -d '{"name": "test", "value": "testval"}' http://127.0.0.1:8000/write
-```
+If you're running etcd on the non-default port, use the `-etcdAddress` flag with format of `http://127.0.0.1:2379`.
