@@ -67,8 +67,7 @@ func (s *Server) mustListenCMux(tlsinfo *transport.TLSInfo) cmux.CMux {
 		os.Exit(1)
 	}
 
-	fmt.Printf("listening for grpc-proxy client requests on %s
-", s.BindAddress)
+	fmt.Printf("listening for grpc-proxy client requests on %s", s.BindAddress)
 	return cmux.New(l)
 }
 
@@ -89,8 +88,7 @@ func discoverEndpoints(dns string, ca string, insecure bool) (s srv.SRVClients) 
 		os.Exit(1)
 	}
 	endpoints := srvs.Endpoints
-	fmt.Printf("discovered the cluster %s from %s
-", endpoints, dns)
+	fmt.Printf("discovered the cluster %s from %s", endpoints, dns)
 	if insecure {
 		return *srvs
 	}
@@ -99,14 +97,12 @@ func discoverEndpoints(dns string, ca string, insecure bool) (s srv.SRVClients) 
 		TrustedCAFile: ca,
 		ServerName:    dns,
 	}
-	fmt.Printf("validating discovered endpoints %v
-", endpoints)
+	fmt.Printf("validating discovered endpoints %v", endpoints)
 	endpoints, err = transport.ValidateSecureEndpoints(tlsInfo, endpoints)
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("using discovered endpoints %v
-", endpoints)
+	fmt.Printf("using discovered endpoints %v", endpoints)
 
 	// map endpoints back to SRVClients struct with SRV data
 	eps := make(map[string]struct{})
