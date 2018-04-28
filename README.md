@@ -69,14 +69,15 @@ The `etcdproxy-proof-of-concept` command has the following flags you can use to 
 To test this project using `sample-apiserver` you need to point `sample-apiserver` to use `etcdproxy-proof-of-concept`
 as its `etcd` server, by using the `--etcd-servers` flag.
 
-The `sample-apiserver` comes with a [`Flunder` resource](https://github.com/xmudrii/etcdproxy-proof-of-concept/blob/master/artifacts/flunders/flunder.yml), which you can create to test does API server writes to `etcd` as
-expected.
+The `sample-apiserver` comes with a [`Flunder` resource](https://github.com/xmudrii/etcdproxy-proof-of-concept/blob/master/artifacts/flunders/flunder.yml), which you can use to create a simple resource, need to test writing to `etcd`.
 
-In the `artifacts/flunders/flunder.yml` file you can find the manifest for a simple `Flunder`. You can API server's API
+In the `artifacts/flunders/flunder.yml` file you can find the manifest for a simple `Flunder`. You can use API server's API
 to apply it, such as:
 ```command
 http --verify no -j --cert-key client.key --cert client.crt https://localhost:8443/apis/wardle.k8s.io/v1alpha1/namespaces/default/flunders < <(python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout, indent=4)' < artifacts/flunders/flunder.yml)
 ```
+
+The latest version of `curl` doesn't work very well with unsigned certificates, so it's recommended to use [`httpie`](https://httpie.org/) instead.
 
 The above command uses Python to convert the YAML manifest to the JSON formatted request, so API can parse it. The
 response contains information about your request.
@@ -95,7 +96,7 @@ prefix.
 ```
 ETCDCTL_API=3 etcdctl get / --prefix --keys-only | grep wardle
 ```
-
+The output should look like:
 ```
 /default/registry/wardle.kubernetes.io/wardle.k8s.io/flunders/default/my-first-flunder
 ```
