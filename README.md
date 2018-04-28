@@ -16,8 +16,8 @@ You can follow the project's progress by following:
 
 ## Prerequisites
 
-* `etcd` version 3.2 or newer
-* `etcdctl` is recommended if you want to test is the proxy working as expected
+* [`etcd`](https://github.com/coreos/etcd) version 3.2 or newer
+* [`etcdctl`](https://github.com/coreos/etcd/tree/master/etcdctl) is recommended if you want to test is the proxy working as expected
 * If you want to test this project with aggregated API server, you need:
 	* minimal Kubernetes cluster ([Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/) or [`local-up-cluster.sh`](https://kubernetes-v1-4.github.io/docs/getting-started-guides/locally/))
 	* [`sample-apiserver`](https://github.com/kubernetes/sample-apiserver)
