@@ -18,6 +18,7 @@ package main
 
 import (
 	"flag"
+
 	"github.com/xmudrii/etcdproxy-proof-of-concept/pkg/proxy"
 )
 
@@ -31,8 +32,5 @@ func main() {
 	flag.Parse()
 
 	s := proxy.NewGRPCServer(*bind, *ns, *etcdAddr)
-	go s.StartNonSecureServer()
-
-	for {
-	}
+	s.StartNonSecureServer()
 }
