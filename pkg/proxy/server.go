@@ -18,6 +18,9 @@ package proxy
 
 import (
 	"fmt"
+	"math"
+	"os"
+
 	"github.com/coreos/etcd/clientv3"
 	"github.com/coreos/etcd/clientv3/namespace"
 	"github.com/coreos/etcd/etcdserver/api/v3election/v3electionpb"
@@ -29,8 +32,6 @@ import (
 	"github.com/soheilhy/cmux"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
-	"math"
-	"os"
 )
 
 // Server provides information about etcd and proxy server.
@@ -44,6 +45,7 @@ type Server struct {
 	EtcdAddress string
 }
 
+// NewGRPCServer creates new gRPC structure.
 func NewGRPCServer(bindAddress, namespace, etcdAddress string) *Server {
 	return &Server{
 		BindAddress: bindAddress,
@@ -52,7 +54,7 @@ func NewGRPCServer(bindAddress, namespace, etcdAddress string) *Server {
 	}
 }
 
-// StartNonSecureGRPCServer starts non-secure etcd-gRPC proxy.
+// StartNonSecureServer starts non-secure etcd-gRPC proxy.
 func (s *Server) StartNonSecureServer() {
 	if !(s.Namespace[len(s.Namespace)-1:] == "/") {
 		s.Namespace += "/"
