@@ -1,4 +1,4 @@
-etcdproxy-proof-of-concept
+etcdproxy-proof-of-concept [![Build Status](https://travis-ci.org/xmudrii/etcdproxy-proof-of-concept.svg?branch=master)](https://travis-ci.org/xmudrii/etcdproxy-proof-of-concept) [![GoDoc](https://godoc.org/github.com/xmudrii/etcdproxy-proof-of-concept?status.svg)](https://godoc.org/github.com/xmudrii/etcdproxy-proof-of-concept) [![Go Report Card](https://goreportcard.com/badge/github.com/xmudrii/etcdproxy-proof-of-concept)](https://goreportcard.com/report/github.com/xmudrii/etcdproxy-proof-of-concept)
 ==========================
 
 The `etcdproxy-proof-of-concept` is a proof of concept made for [my GSoC project](https://summerofcode.withgoogle.com/projects/#6400208972283904) to demonstrate using [`etcd` Namespaces](https://github.com/coreos/etcd/blob/3239641a0c0e421769224b4e6c1dc06ce4dc3e48/Documentation/op-guide/grpc_proxy.md#namespacing) exposed by [`etcd-gRPC` server](https://github.com/coreos/etcd/blob/3239641a0c0e421769224b4e6c1dc06ce4dc3e48/Documentation/op-guide/grpc_proxy.md) with Kubernetes Aggregated API servers.
@@ -69,7 +69,7 @@ The `etcdproxy-proof-of-concept` command has the following flags you can use to 
 To test this project using `sample-apiserver` you need to point `sample-apiserver` to use `etcdproxy-proof-of-concept`
 as its `etcd` server, by using the `--etcd-servers` flag.
 
-The `sample-apiserver` comes with a `Flunder` resource, which you can create to test does API server writes to `etcd` as
+The `sample-apiserver` comes with a [`Flunder` resource](https://github.com/xmudrii/etcdproxy-proof-of-concept/blob/master/artifacts/flunders/flunder.yml), which you can create to test does API server writes to `etcd` as
 expected.
 
 In the `artifacts/flunders/flunder.yml` file you can find the manifest for a simple `Flunder`. You can API server's API
