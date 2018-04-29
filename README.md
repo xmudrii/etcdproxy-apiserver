@@ -59,7 +59,7 @@ the port `23790`, by proxying the namespace called `default`. By default it uses
 `2379`.
 
 The `etcdproxy-proof-of-concept` command has the following flags you can use to change default values:
-* `--etcdAddress` - address of the `etcd` instance (formatted as `http://127.0.0.1:2379`)
+* `--etcdAddresses` - address of the `etcd` instance (formatted as `http://127.0.0.1:2379,http://<ip>:<port>,...`)
 * `--namespace` - namespace to use
 * `--bindAddress` - bind `etcdproxy` to the provided address and port (formatted as `<address>:<port>`)
 
