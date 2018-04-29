@@ -41,25 +41,21 @@ type Server struct {
 	// etcd namespace to provide over the proxy.
 	Namespace string
 
-	// EtcdAddress in format of http://<ip>:<port>.
-	EtcdAddress string
+	// EtcdAddresses in format of http://<ip>:<port>.
+	EtcdAddresses []string
 }
 
 // NewGRPCServer creates new gRPC structure.
-func NewGRPCServer(bindAddress, namespace, etcdAddress string) *Server {
+func NewGRPCServer(bindAddress, namespace string, etcdAddresses []string) *Server {
 	return &Server{
-		BindAddress: bindAddress,
-		Namespace:   namespace,
-		EtcdAddress: etcdAddress,
+		BindAddress:   bindAddress,
+		Namespace:     namespace,
+		EtcdAddresses: etcdAddresses,
 	}
 }
 
 // StartNonSecureServer starts non-secure etcd-gRPC proxy.
 func (s *Server) StartNonSecureServer() {
-	if !(s.Namespace[len(s.Namespace)-1:] == "/") {
-		s.Namespace += "/"
-	}
-
 	// gRPC logging.
 	capnslog.SetGlobalLogLevel(capnslog.DEBUG)
 	grpc.EnableTracing = true

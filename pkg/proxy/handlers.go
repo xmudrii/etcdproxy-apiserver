@@ -24,7 +24,6 @@ import (
 	"time"
 
 	"github.com/coreos/etcd/clientv3"
-	"github.com/coreos/etcd/pkg/srv"
 	"github.com/coreos/etcd/pkg/transport"
 	"github.com/coreos/etcd/proxy/grpcproxy"
 	"github.com/soheilhy/cmux"
@@ -32,13 +31,7 @@ import (
 )
 
 func (s *Server) mustNewClient() *clientv3.Client {
-	srvs := discoverEndpoints("", "", false)
-	eps := srvs.Endpoints
-	if len(eps) == 0 {
-		eps = []string{s.EtcdAddress}
-	}
-
-	cfg, err := newClientCfg(eps)
+	cfg, err := newClientCfg(s.EtcdAddresses)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -76,48 +69,6 @@ func mustHTTPListener(m cmux.CMux, tlsinfo *transport.TLSInfo, c *clientv3.Clien
 	httpmux.HandleFunc("/", http.NotFound)
 	srvhttp := &http.Server{Handler: httpmux}
 	return srvhttp, m.Match(cmux.HTTP1())
-}
-
-func discoverEndpoints(dns string, ca string, insecure bool) (s srv.SRVClients) {
-	if dns == "" {
-		return s
-	}
-	srvs, err := srv.GetClient("etcd-client", dns)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
-	endpoints := srvs.Endpoints
-	fmt.Printf("discovered the cluster %s from %s", endpoints, dns)
-	if insecure {
-		return *srvs
-	}
-	// confirm TLS connections are good
-	tlsInfo := transport.TLSInfo{
-		TrustedCAFile: ca,
-		ServerName:    dns,
-	}
-	fmt.Printf("validating discovered endpoints %v", endpoints)
-	endpoints, err = transport.ValidateSecureEndpoints(tlsInfo, endpoints)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Printf("using discovered endpoints %v", endpoints)
-
-	// map endpoints back to SRVClients struct with SRV data
-	eps := make(map[string]struct{})
-	for _, ep := range endpoints {
-		eps[ep] = struct{}{}
-	}
-	for i := range srvs.Endpoints {
-		if _, ok := eps[srvs.Endpoints[i]]; !ok {
-			continue
-		}
-		s.Endpoints = append(s.Endpoints, srvs.Endpoints[i])
-		s.SRVs = append(s.SRVs, srvs.SRVs[i])
-	}
-
-	return s
 }
 
 func newClientCfg(eps []string) (*clientv3.Config, error) {
