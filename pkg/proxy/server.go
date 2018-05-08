@@ -32,6 +32,9 @@ import (
 	"github.com/soheilhy/cmux"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
+	"time"
+	"github.com/coreos/etcd/pkg/transport"
+	"net"
 )
 
 // Server provides information about etcd and proxy server.
@@ -66,10 +69,8 @@ func (s *Server) StartNonSecureServer() {
 	grpcl := m.Match(cmux.HTTP2())
 
 	client := s.mustNewClient()
-	srvhttp, httpl := mustHTTPListener(m, nil, client)
 	errc := make(chan error)
 	go func() { errc <- s.newGRPCProxyServer(client).Serve(grpcl) }()
-	go func() { errc <- srvhttp.Serve(httpl) }()
 	go func() { errc <- m.Serve() }()
 
 	fmt.Fprintln(os.Stderr, <-errc)
@@ -110,4 +111,38 @@ func (s *Server) newGRPCProxyServer(client *clientv3.Client) *grpc.Server {
 	grpc_prometheus.Register(server)
 
 	return server
+}
+
+func (s *Server) mustNewClient() *clientv3.Client {
+	cfg := clientv3.Config{
+		Endpoints:   s.EtcdAddresses,
+		DialTimeout: 5 * time.Second,
+	}
+
+	cfg.DialOptions = append(cfg.DialOptions,
+		grpc.WithUnaryInterceptor(grpcproxy.AuthUnaryClientInterceptor))
+	cfg.DialOptions = append(cfg.DialOptions,
+		grpc.WithStreamInterceptor(grpcproxy.AuthStreamClientInterceptor))
+	client, err := clientv3.New(cfg)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	return client
+}
+
+func (s *Server) mustListenCMux(tlsinfo *transport.TLSInfo) cmux.CMux {
+	l, err := net.Listen("tcp", s.BindAddress)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	if l, err = transport.NewKeepAliveListener(l, "tcp", nil); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("listening for grpc-proxy client requests on %s", s.BindAddress)
+	return cmux.New(l)
 }
