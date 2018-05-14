@@ -30,6 +30,8 @@ func main() {
 	ns := flag.String("namespace", "default", "Proxy namespace. Default: 'default'")
 	etcdAddr := flag.String("etcdAddresses", "http://127.0.0.1:2379", "Comma separated list of etcd endpoints. "+
 		"Required format: http://ip:port,http://ip:port,... Default: 'http://127.0.0.1:2379'")
+	serverCert := flag.String("cert", "server.crt", "Name of the certificate to be used for proxy server.")
+	serverKey := flag.String("key", "server.key", "Name of the certificate key to be used for proxy server.")
 	flag.Parse()
 
 	// Create array of etcd endpoints separated by comma.
@@ -38,6 +40,6 @@ func main() {
 	*ns = "/" + *ns
 
 	// Start GRPC server.
-	s := proxy.NewGRPCServer(*bind, *ns, addr)
+	s := proxy.NewGRPCServer(*bind, *ns, addr, *serverCert, *serverKey)
 	s.StartNonSecureServer()
 }
