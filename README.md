@@ -1,5 +1,4 @@
-etcdproxy-proof-of-concept [![Build Status](https://travis-ci.org/xmudrii/etcdproxy-proof-of-concept.svg?branch=master)](https://travis-ci.org/xmudrii/etcdproxy-proof-of-concept) [![GoDoc](https://godoc.org/github.com/xmudrii/etcdproxy-proof-of-concept?status.svg)](https://godoc.org/github.com/xmudrii/etcdproxy-proof-of-concept) [![Go Report Card](https://goreportcard.com/badge/github.com/xmudrii/etcdproxy-proof-of-concept)](https://goreportcard.com/report/github.com/xmudrii/etcdproxy-proof-of-concept)
-==========================
+# etcdproxy-proof-of-concept [![Build Status](https://travis-ci.org/xmudrii/etcdproxy-proof-of-concept.svg?branch=master)](https://travis-ci.org/xmudrii/etcdproxy-proof-of-concept) [![GoDoc](https://godoc.org/github.com/xmudrii/etcdproxy-proof-of-concept?status.svg)](https://godoc.org/github.com/xmudrii/etcdproxy-proof-of-concept) [![Go Report Card](https://goreportcard.com/badge/github.com/xmudrii/etcdproxy-proof-of-concept)](https://goreportcard.com/report/github.com/xmudrii/etcdproxy-proof-of-concept)
 
 The `etcdproxy-proof-of-concept` is a proof of concept made for [my GSoC project](https://summerofcode.withgoogle.com/projects/#6400208972283904) to demonstrate using [`etcd` Namespaces](https://github.com/coreos/etcd/blob/3239641a0c0e421769224b4e6c1dc06ce4dc3e48/Documentation/op-guide/grpc_proxy.md#namespacing) exposed by [`etcd-gRPC` server](https://github.com/coreos/etcd/blob/3239641a0c0e421769224b4e6c1dc06ce4dc3e48/Documentation/op-guide/grpc_proxy.md) with Kubernetes Aggregated API servers.
 
@@ -21,6 +20,12 @@ You can follow the project's progress by following:
 * If you want to test this project with aggregated API server, you need:
 	* minimal Kubernetes cluster ([Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/) or [`local-up-cluster.sh`](https://kubernetes-v1-4.github.io/docs/getting-started-guides/locally/))
 	* [`sample-apiserver`](https://github.com/kubernetes/sample-apiserver)
+* Certificates generated needed for the proxy server. Certificates can be generated using the following commands:
+```
+openssl genrsa -out server.key 2048
+openssl ecparam -genkey -name secp384r1 -out server.key
+openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
+```
 
 ### `etcd`
 
@@ -84,7 +89,7 @@ response contains information about your request.
 
 You can use `etcdctl` to make sure the `Flunder` is defined in `etcd`:
 ```
-ETCDCTL_API=3 etcdctl get / --prefix --keys-only --endpoints 127.0.0.1:23790 | grep wardle
+ETCDCTL_API=3 etcdctl get / --prefix --keys-only --endpoints 127.0.0.1:23790 --cert="server.crt" --key="server.key" --insecure-skip-tls-verify=true | grep wardle
 ```
 This should return output such as:
 ```

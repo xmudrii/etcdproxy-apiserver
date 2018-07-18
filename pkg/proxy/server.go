@@ -21,6 +21,12 @@ import (
 	"math"
 	"os"
 
+	"crypto/tls"
+	"log"
+	"net"
+	"net/http"
+	"time"
+
 	"github.com/coreos/etcd/clientv3"
 	"github.com/coreos/etcd/clientv3/namespace"
 	"github.com/coreos/etcd/etcdserver/api/v3election/v3electionpb"
@@ -29,12 +35,9 @@ import (
 	"github.com/coreos/etcd/proxy/grpcproxy"
 	"github.com/coreos/pkg/capnslog"
 	"github.com/grpc-ecosystem/go-grpc-prometheus"
-	"github.com/soheilhy/cmux"
+	"golang.org/x/net/http2"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
-	"time"
-	"github.com/coreos/etcd/pkg/transport"
-	"net"
 )
 
 // Server provides information about etcd and proxy server.
@@ -46,14 +49,22 @@ type Server struct {
 
 	// EtcdAddresses in format of http://<ip>:<port>.
 	EtcdAddresses []string
+
+	// ServerCert is name of the cert file.
+	ServerCert string
+
+	// ServerKey is name of the key file.
+	ServerKey string
 }
 
 // NewGRPCServer creates new gRPC structure.
-func NewGRPCServer(bindAddress, namespace string, etcdAddresses []string) *Server {
+func NewGRPCServer(bindAddress, namespace string, etcdAddresses []string, serverCert, serverKey string) *Server {
 	return &Server{
 		BindAddress:   bindAddress,
 		Namespace:     namespace,
 		EtcdAddresses: etcdAddresses,
+		ServerCert:    serverCert,
+		ServerKey:     serverKey,
 	}
 }
 
@@ -65,13 +76,12 @@ func (s *Server) StartNonSecureServer() {
 	grpclog.SetLoggerV2(grpclog.NewLoggerV2(os.Stderr, os.Stderr, os.Stderr))
 
 	// Start server.
-	m := s.mustListenCMux(nil)
-	grpcl := m.Match(cmux.HTTP2())
+	srv, l := s.mustListenSecure()
 
 	client := s.mustNewClient()
 	errc := make(chan error)
-	go func() { errc <- s.newGRPCProxyServer(client).Serve(grpcl) }()
-	go func() { errc <- m.Serve() }()
+	go func() { errc <- s.newGRPCProxyServer(client).Serve(l) }()
+	go func() { errc <- srv.ServeTLS(l, s.ServerCert, s.ServerKey) }()
 
 	fmt.Fprintln(os.Stderr, <-errc)
 }
@@ -131,18 +141,50 @@ func (s *Server) mustNewClient() *clientv3.Client {
 	return client
 }
 
-func (s *Server) mustListenCMux(tlsinfo *transport.TLSInfo) cmux.CMux {
+func (s *Server) mustListenInsecure() (*http.Server, net.Listener) {
 	l, err := net.Listen("tcp", s.BindAddress)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
-	if l, err = transport.NewKeepAliveListener(l, "tcp", nil); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+	fmt.Printf("listening for grpc-proxy client requests on %s\n", s.BindAddress)
+
+	srv := &http.Server{}
+	srv.SetKeepAlivesEnabled(true)
+
+	fmt.Printf("creating the server for grpc-proxy client requests on %s\n", s.BindAddress)
+
+	return srv, l
+}
+
+func (s *Server) mustListenSecure() (*http.Server, net.Listener) {
+	// TLS configuration
+	cer, err := tls.LoadX509KeyPair("server.crt", "server.key")
+	if err != nil {
+		log.Println(err)
 	}
 
-	fmt.Printf("listening for grpc-proxy client requests on %s", s.BindAddress)
-	return cmux.New(l)
+	config := &tls.Config{
+		Certificates:       []tls.Certificate{cer},
+		InsecureSkipVerify: true,
+	}
+
+	// Listener.
+	l, err := tls.Listen("tcp", s.BindAddress, config)
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
+	fmt.Printf("listening for grpc-proxy client requests on %s\n", s.BindAddress)
+
+	// HTTPS server.
+	srv := &http.Server{
+		TLSConfig: config,
+	}
+	srv.SetKeepAlivesEnabled(true)
+	http2.ConfigureServer(srv, &http2.Server{})
+	fmt.Printf("creating the server for grpc-proxy client requests on %s\n", s.BindAddress)
+
+	return srv, l
 }
