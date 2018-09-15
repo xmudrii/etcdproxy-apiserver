@@ -2,6 +2,8 @@
 
 The `etcdproxy-proof-of-concept` is a proof of concept made for [my GSoC project](https://summerofcode.withgoogle.com/projects/#6400208972283904) to demonstrate using [`etcd` Namespaces](https://github.com/coreos/etcd/blob/3239641a0c0e421769224b4e6c1dc06ce4dc3e48/Documentation/op-guide/grpc_proxy.md#namespacing) exposed by [`etcd-gRPC` server](https://github.com/coreos/etcd/blob/3239641a0c0e421769224b4e6c1dc06ce4dc3e48/Documentation/op-guide/grpc_proxy.md) with Kubernetes Aggregated API servers.
 
+This project is no longer maintained. Instead, check out [`xmudrii/etcdproxy-controller`](https://github.com/xmudrii/etcdproxy-controller).
+
 If you want to learn more about my GSoC project, check out the following resources:
 * [GSoC project page](https://summerofcode.withgoogle.com/projects/#6400208972283904)
 * [Submitted proposal (PDF)](https://github.com/xmudrii/gsoc-2018-meta-k8s/blob/master/proposal/proposal.pdf)
